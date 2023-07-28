@@ -1548,7 +1548,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const move = dex.moves.get(id);
 				if (moves.includes(move.id)) continue;
 				if (move.gen > dex.gen) continue;
-				if (move.isZ || move.isMax || (move.isNonstandard && move.isNonstandard !== 'Unobtainable')) continue;
+				if (move.isZ || move.isMax ) continue;
 
 				const speciesTypes: string[] = [];
 				const moveTypes: string[] = [];
