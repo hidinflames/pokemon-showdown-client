@@ -1089,8 +1089,8 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 		BattleTeambuilderTable[mod] = overrideSpeciesData;
 		for (const id in modData.Pokedex) {
 			const modEntry = modDex.species.get(id);
-			const parentEntry = parentDex.species.get(id);
 			for (const key of overrideSpeciesKeys) {
+				// eslint-disable-next-line no-self-compare, no-undef
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideSpeciesData[id]) overrideSpeciesData[id] = {};
 					overrideSpeciesData[id][key] = modEntry[key];
@@ -1105,6 +1105,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			const parentEntry = parentDex.moves.get(id);
 			for (const key of overrideMoveKeys) {
 				if (key === 'category' && modDex.gen <= 3) continue;
+				// eslint-disable-next-line no-self-compare, no-undef
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideMoveData[id]) overrideMoveData[id] = {};
 					overrideMoveData[id][key] = modEntry[key];
@@ -1118,6 +1119,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			const modEntry = modDex.abilities.get(id);
 			const parentEntry = parentDex.abilities.get(id);
 			for (const key of overrideAbilityKeys) {
+				// eslint-disable-next-line no-self-compare, no-undef
 				if (JSON.stringify(modEntry[key]) !== JSON.stringify(parentEntry[key])) {
 					if (!overrideAbilityData[id]) overrideAbilityData[id] = {};
 					overrideAbilityData[id][key] = modEntry[key];
