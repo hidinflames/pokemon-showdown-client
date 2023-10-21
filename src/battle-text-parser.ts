@@ -46,7 +46,7 @@ class BattleTextParser {
 		case 'fieldhtml': case 'controlshtml': case 'bigerror':
 		case 'debug': case 'tier': case 'challstr': case 'popup': case '':
 			return [cmd, line.slice(index + 1)];
-		case 'c': case 'chat': case 'uhtml': case 'uhtmlchange': case 'queryresponse':
+		case 'c': case 'chat': case 'uhtml': case 'uhtmlchange': case 'queryresponse': case 'showteam':
 			// three parts
 			const index2a = line.indexOf('|', index + 1);
 			return [cmd, line.slice(index + 1, index2a), line.slice(index2a + 1)];
@@ -180,6 +180,12 @@ class BattleTextParser {
 				args[0] = '-block';
 				return {args: ['-block', pokemon, effect, move, kwArgs.of], kwArgs: {}};
 			}
+			break;
+		}
+
+		case '-heal': {
+			const id = BattleTextParser.effectId(kwArgs.from);
+			if (['dryskin', 'eartheater', 'voltabsorb', 'waterabsorb'].includes(id)) kwArgs.of = '';
 			break;
 		}
 
@@ -930,7 +936,7 @@ class BattleTextParser {
 		case '-heal': {
 			let [, pokemon] = args;
 			let template = this.template('heal', kwArgs.from, 'NODEFAULT');
-			const line1 = this.maybeAbility(kwArgs.from, pokemon);
+			const line1 = this.maybeAbility(kwArgs.from, kwArgs.of || pokemon);
 			if (template) {
 				return line1 + template.replace('[POKEMON]', this.pokemon(pokemon)).replace('[SOURCE]', this.pokemon(kwArgs.of)).replace('[NICKNAME]', kwArgs.wisher);
 			}
@@ -960,7 +966,7 @@ class BattleTextParser {
 				return line1 + template.replace('[POKEMON]', this.pokemon(pokemon)).replace('[STAT]', BattleTextParser.stat(stat)).replace('[ITEM]', this.effect(kwArgs.from));
 			}
 			const template = this.template(templateId, kwArgs.from);
-			return line1 + template.replace('[POKEMON]', this.pokemon(pokemon)).replace('[STAT]', BattleTextParser.stat(stat));
+			return line1 + template.replace(/\[POKEMON\]/g, this.pokemon(pokemon)).replace('[STAT]', BattleTextParser.stat(stat));
 		}
 
 		case '-setboost': {
