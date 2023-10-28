@@ -107,6 +107,7 @@ export class Pokemon implements PokemonDetails, PokemonHealth {
 	timesAttacked = 0;
 
 	sprite: PokemonSprite;
+	static types: any;
 
 	constructor(data: PokemonDetails, side: Side) {
 		this.side = side;

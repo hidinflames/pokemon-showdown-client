@@ -1379,6 +1379,9 @@ class Ability implements Effect {
 }
 
 class Species implements Effect {
+	filter(arg0: (s: any) => any) {
+		throw new Error("Method not implemented.");
+	}
 	// effect
 	readonly effectType = 'Species';
 	readonly id: ID;
