@@ -1653,7 +1653,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					return [`${curSpecies.name} doesn't have access to ${this.dex.abilities.get(set.ability).name}.`];
 				}
 			}
-			checkCanLearn(moves, species, setSources, this.set) {
+			checkCanLearn(moves, species, setSources, this.set); {
 				const matchingSpecies = this.dex.species.all()
 					.filter(s => (
 						(!s.isNonstandard || this.ruleTable.has(`+pokemontag:${this.toID(s.isNonstandard)}`)) &&
