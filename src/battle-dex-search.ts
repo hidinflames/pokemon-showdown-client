@@ -1125,7 +1125,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			abilitySet.push(['header', "Special Event Ability"]);
 			abilitySet.push(['ability', toID(species.abilities['S'])]);
 		}
-		if (isAAA || format.includes('metronomebattle') || isHackmons || isConvergence) {
+		if (isAAA || format.includes('metronomebattle') || isHackmons) {
 			let abilities: ID[] = [];
 			for (let i in this.getTable()) {
 				const ability = dex.abilities.get(i);
@@ -1500,7 +1500,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
-		const isConvergence = (format.includes('convergence'));
 		const isTradebacks = format.includes('tradebacks');
 		const regionBornLegality = dex.gen >= 6 &&
 			/^battle(spot|stadium|festival)/.test(format) || format.startsWith('vgc') ||
@@ -1626,45 +1625,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				}
 				if (valid) moves.push(id);
 			}
-		}
-		if (isConvergence) {
-			for (let id in this.getTable()) {
-				const move = dex.moves.get(id);
-				if (moves.includes(move.id)) continue;
-				if (move.gen > dex.gen) continue;
-				if (move.isZ || move.isMax ) continue;
-
-				const curSpecies = this.dex.species.get(set.species);
-				const obtainableAbilityPool = new Set<string>();
-				const matchingSpecies = this.dex.species.all()
-					.filter((species: { isNonstandard: any; types: any[]; }) => (
-						(!species.isNonstandard || this.ruleTable.has(`+pokemontag:${this.toID(species.isNonstandard)}`)) &&
-						species.types.length === curSpecies.types.length && !this.ruleTable.isBannedSpecies(species)
-					));
-				for (const species of matchingSpecies) {
-					for (const abilityName of Object.values(species.abilities)) {
-						const abilityid = this.toID(abilityName);
-						obtainableAbilityPool.add(abilityid);
-					}
-				}
-				if (!obtainableAbilityPool.has(this.toID(set.ability))) {
-					return [`${curSpecies.name} doesn't have access to ${this.dex.abilities.get(set.ability).name}.`];
-				}
-			}
-			checkCanLearn(moves, species, setSources, this.set); {
-				const matchingSpecies = this.dex.species.all()
-					.filter(s => (
-						(!s.isNonstandard || this.ruleTable.has(`+pokemontag:${this.toID(s.isNonstandard)}`)) &&
-						s.types.every(type => species.types.includes(type)) &&
-						s.types.length === species.types.length && !this.ruleTable.isBannedSpecies(s)
-					));
-				const someCanLearn = matchingSpecies.some(s => this.checkCanLearn(moves, s, setSources, this.set) === null);
-				if (someCanLearn) return null;
-				return this.checkCanLearn(moves, species, setSources, this.set);
-						}
-					}
-				if (valid) moves.push(id);
-				
+		}	
 		moves.sort();
 		sketchMoves.sort();
 
