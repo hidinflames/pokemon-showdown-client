@@ -1633,8 +1633,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				if (moves.includes(move.id)) continue;
 				if (move.gen > dex.gen) continue;
 				if (move.isZ || move.isMax ) continue;
-				if (ability.isNonstandard) continue;
-				if (ability.gen > dex.gen) continue;
 
 				const curSpecies = this.dex.species.get(set.species);
 				const obtainableAbilityPool = new Set<string>();
