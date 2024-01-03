@@ -3,9 +3,9 @@ import preact from 'preact';
 import $ from 'jquery';
 import {Net} from './utils';
 import {PSRouter, PSReplays} from './replays';
-import {Battle} from '../../src/battle';
-import {BattleLog} from '../../src/battle-log';
-import {BattleSound} from '../../src/battle-sound';
+import {Battle} from '../../play.pokemonshowdown.com/src/battle';
+import {BattleLog} from '../../play.pokemonshowdown.com/src/battle-log';
+import {BattleSound} from '../../play.pokemonshowdown.com/src/battle-sound';
 declare function toID(input: string): string;
 
 function showAd(id: string) {
@@ -60,16 +60,14 @@ export class BattlePanel extends preact.Component<{id: string}> {
     uploadtime: number;
     id: string;
     format: string;
-    p1: string;
-    p2: string;
+    players: string[];
     log: string;
     views: number;
-    p1id: string;
-    p2id: string;
     rating: number;
     private: number;
     password: string;
   } | null | undefined = undefined;
+  resultError = '';
   battle: Battle | null;
   /** debug purposes */
   lastUsedKeyCode = '0';
@@ -92,22 +90,28 @@ export class BattlePanel extends preact.Component<{id: string}> {
     if (this.battle) this.battle.destroy();
     this.battle = null;
     this.result = undefined;
+    this.resultError = '';
+    this.forceUpdate();
 
     const elem = document.getElementById(`replaydata-${id}`);
+    const logElem = document.getElementById(`replaylog-${id}`);
     if (elem) {
-      this.loadResult(elem.innerText, id);
+      // we actually do need to wait for that update to finish so
+      // loadResult definitely has access to $frame and $logFrame
+      setTimeout(() => this.loadResult(elem.innerText, id, logElem?.innerText.replace(/<\\\//g, '</')), 1);
       return;
     }
 
     Net(`/${this.stripQuery(id)}.json`).get().then(result => {
       this.loadResult(result, id);
-    }).catch(_ => {
-      this.loadResult('', id);
+    }).catch(err => {
+      this.loadResult(err.statusCode === 404 ? '' : String(err?.body || ''), id);
     });
   }
-  loadResult(result: string, id: string) {
+  loadResult(result: string, id: string, log = '') {
     try {
       const replay: NonNullable<BattlePanel['result']> = JSON.parse(result);
+      replay.log ||= log;
       this.result = replay;
       const $base = $(this.base!);
       this.battle = new Battle({
@@ -131,8 +135,9 @@ export class BattlePanel extends preact.Component<{id: string}> {
       if (query.turn || query.t) {
         this.battle.seekTurn(parseInt(query.turn || query.t, 10));
       }
-    } catch {
+    } catch (err) {
       this.result = null;
+      this.resultError = result.startsWith('{') ? err.toString() : result;
     }
     this.forceUpdate();
   }
@@ -353,20 +358,21 @@ export class BattlePanel extends preact.Component<{id: string}> {
     e?.preventDefault();
     this.forceUpdate();
   };
-  renderNotFound() {
-    return <div class={PSRouter.showingLeft() ? 'mainbar has-sidebar' : 'mainbar'}><section class="section" style={{maxWidth: '200px'}}>
-      {/* <div style={{margin: '0 -20px'}}>
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-n.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-o.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-t.png" alt="" width={120} height={120} />
-      </div>
-      <div style={{margin: '-40px -20px 0'}}>
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-f.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-o.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-u.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-n.png" alt="" width={120} height={120} style={{marginRight: '-60px'}} />
-        <img src="//play.pokemonshowdown.com/sprites/dex/unown-d.png" alt="" width={120} height={120} />
-      </div> */}
+  renderError(position: any) {
+    if (this.resultError) {
+      return <div class={PSRouter.showingLeft() ? 'mainbar has-sidebar' : 'mainbar'} style={position}><section class="section">
+        <h1>Error</h1>
+        <p>
+          {this.resultError}
+        </p>
+      </section></div>;
+    }
+
+    // In theory, this should almost never happen, because Replays will
+    // never link to a nonexistent replay, but this might happen if e.g.
+    // a replay gets deleted or made private after you searched for it
+    // but before you clicked it.
+    return <div class={PSRouter.showingLeft() ? 'mainbar has-sidebar' : 'mainbar'} style={position}><section class="section" style={{maxWidth: '200px'}}>
       <div style={{textAlign: 'center'}}>
         <img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-n.gif" alt="" style={{imageRendering: 'pixelated'}} />
         <img src="//play.pokemonshowdown.com/sprites/gen5ani/unown-o.gif" alt="" style={{imageRendering: 'pixelated'}} />
@@ -469,13 +475,13 @@ export class BattlePanel extends preact.Component<{id: string}> {
         <label class="optgroup">
           Viewpoint:<br />
           <button onClick={this.switchViewpoint} name="viewpoint" class={this.battle ? 'button' : 'button disabled'}>
-            {(this.battle?.viewpointSwitched ? this.result?.p2 : this.result?.p1 || "Player")} {}
+            {(this.battle?.viewpointSwitched ? this.result?.players[1] : this.result?.players[0] || "Player")} {}
             <i class="fa fa-random" aria-label="Switch viewpoint"></i>
           </button>
         </label>
       </p>
       {this.result ? <h1>
-        <strong>{this.result.format}</strong>: {this.result.p1} vs. {this.result.p2}
+        <strong>{this.result.format}</strong>: {this.result.players.join(' vs. ')}
       </h1> : <h1>
         <em>Loading...</em>
       </h1>}
@@ -493,8 +499,6 @@ export class BattlePanel extends preact.Component<{id: string}> {
     </div>;
   }
   override render() {
-    if (this.result === null) return this.renderNotFound();
-
     let position: any = {};
     if (PSRouter.showingLeft()) {
       if (PSRouter.stickyRight) {
@@ -503,6 +507,8 @@ export class BattlePanel extends preact.Component<{id: string}> {
         position = {position: 'sticky', bottom: '0'};
       }
     }
+
+    if (this.result === null) return this.renderError(position);
 
     return <div class={PSRouter.showingLeft() ? 'mainbar has-sidebar' : 'mainbar'} style={position}><div style={{position: 'relative'}}>
       <BattleDiv />
