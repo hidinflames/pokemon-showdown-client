@@ -1573,9 +1573,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             ) {
                                 continue;
                             }
-                            if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-                                continue;
-                            }
                             if (
                                 this.formatType?.startsWith('dlc1') &&
                                 BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
@@ -1642,9 +1639,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					) {
 						continue;
 					}
-					if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-						continue;
-					}
 					if (
 						this.formatType?.startsWith('dlc1') &&
 						BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
@@ -1666,8 +1660,11 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					if (moves.includes(moveid)) continue;
 					moves.push(moveid);
 					if (moveid === 'sketch') sketch = true;
-					{
-						continue;
+					if (moveid === 'hiddenpower') {
+						moves.push(
+							'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+						);
+					}
 				}
 			}
 			learnsetid = this.nextLearnsetid(learnsetid, species.id);
