@@ -1573,9 +1573,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             ) {
                                 continue;
                             }
-                            if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-                                continue;
-                            }
                             if (
                                 this.formatType?.startsWith('dlc1') &&
                                 BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
@@ -1604,10 +1601,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             if (convergence[type2 + ', ' + type1].includes(moveid)) continue;
                             convergence[type2 + ', ' + type1].push(moveid);
                             if (moveid === 'sketch') sketch = true;
-                            if (moveid === 'hiddenpower') {
-                                moves.push(
-                                    'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
-                                );
                             }
                         }
                         learnsetidConvergence = this.nextLearnsetid(learnsetidConvergence, speciesConvergence.id);
