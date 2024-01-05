@@ -1594,12 +1594,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             ) {
                                 continue;
                             }
-							if (moveid === 'sketch') sketch = true;
-                            if (moveid === 'hiddenpower') {
-                                moves.push(
-                                    'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
-                                );
-                            }
                             const type1 = BattlePokedex[convergenceSpecies].types[0];
                             var type2 = BattlePokedex[convergenceSpecies].types[1];
 							if (type2 == undefined) type2 = type1;
@@ -1609,9 +1603,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             if (!convergence[type2 + ', ' + type1]) convergence[type2 + ', ' + type1] = [];
                             if (convergence[type2 + ', ' + type1].includes(moveid)) continue;
                             convergence[type2 + ', ' + type1].push(moveid);
-                            if (moveid === 'sketch') sketch = true;
-                            if (moveid === 'hiddenpower') {
-                            }
                         }
                         learnsetidConvergence = this.nextLearnsetid(learnsetidConvergence, speciesConvergence.id);
                     }
