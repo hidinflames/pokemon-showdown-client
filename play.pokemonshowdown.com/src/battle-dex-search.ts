@@ -1535,6 +1535,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
+		const isConvergence = (format.includes('convergence'))
 		const isTradebacks = format.includes('tradebacks');
 		const regionBornLegality = dex.gen >= 6 &&
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
@@ -1689,6 +1690,18 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		}
 		for (const id of sketchMoves) {
 			const isUsable = this.moveIsNotUseless(id as ID, species, sketchMoves, this.set);
+			if (isUsable) {
+				usableMoves.push(['move', id as ID]);
+			} else {
+				uselessMoves.push(['move', id as ID]);
+			}
+		}
+		if (convergenceMoves.length) {
+			usableMoves.push(['header', "Converged moves"]);
+			uselessMoves.push(['header', "Useless converged moves"]);
+		}
+		for (const id of convergenceMoves) {
+			const isUsable = this.moveIsNotUseless(id as ID, species, convergenceMoves, this.set);
 			if (isUsable) {
 				usableMoves.push(['move', id as ID]);
 			} else {
