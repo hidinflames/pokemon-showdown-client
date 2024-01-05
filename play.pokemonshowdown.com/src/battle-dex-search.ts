@@ -1602,7 +1602,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             }
                             const type1 = BattlePokedex[convergenceSpecies].types[0];
                             var type2 = BattlePokedex[convergenceSpecies].types[1];
-                            if (type2 == undefined) type2 = 3;
+							if (type2 == undefined) type2 = type1;
                             if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
                             if (convergence[type1 + ', ' + type2].includes(moveid)) continue;
                             convergence[type1 + ', ' + type2].push(moveid);
@@ -1619,7 +1619,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
             }
             const type1 = species.types[0];
             var type2 = species.types[1];
-            if (type2 == undefined) type2 == 3;
+			if (type2 == undefined) type2 = type1;
             for (const moveidConvergence of convergence[type1 + ', ' + type2]) {
                 if (moves.includes(moveidConvergence)) continue;
                 moves.push(moveidConvergence);
