@@ -1573,6 +1573,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             ) {
                                 continue;
                             }
+                            if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+                                continue;
+                            }
                             if (
                                 this.formatType?.startsWith('dlc1') &&
                                 BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
@@ -1591,9 +1594,15 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             ) {
                                 continue;
                             }
+							if (moveid === 'sketch') sketch = true;
+                            if (moveid === 'hiddenpower') {
+                                moves.push(
+                                    'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+                                );
+                            }
                             const type1 = BattlePokedex[convergenceSpecies].types[0];
                             var type2 = BattlePokedex[convergenceSpecies].types[1];
-                            if (type2 == undefined) type2 = type1;
+                            if (type2 == undefined) type2 = 3;
                             if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
                             if (convergence[type1 + ', ' + type2].includes(moveid)) continue;
                             convergence[type1 + ', ' + type2].push(moveid);
@@ -1602,9 +1611,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
                             convergence[type2 + ', ' + type1].push(moveid);
                             if (moveid === 'sketch') sketch = true;
                             if (moveid === 'hiddenpower') {
-                                moves.push(
-                                    'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
-                                );
                             }
                         }
                         learnsetidConvergence = this.nextLearnsetid(learnsetidConvergence, speciesConvergence.id);
@@ -1613,7 +1619,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
             }
             const type1 = species.types[0];
             var type2 = species.types[1];
-            if (type2 == undefined) type2 == type1;
+            if (type2 == undefined) type2 == 3;
             for (const moveidConvergence of convergence[type1 + ', ' + type2]) {
                 if (moves.includes(moveidConvergence)) continue;
                 moves.push(moveidConvergence);
@@ -1637,6 +1643,9 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						!learnsetEntry.includes(gen) &&
 						(!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
 					) {
+						continue;
+					}
+					if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
 						continue;
 					}
 					if (
