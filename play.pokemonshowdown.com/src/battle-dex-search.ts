@@ -1535,6 +1535,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
+        const isConvergence = format.includes('convergence');
 		const isTradebacks = format.includes('tradebacks');
 		const regionBornLegality = dex.gen >= 6 &&
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
@@ -1551,6 +1552,80 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
+        if (isConvergence) {
+            var convergence = {};
+            for (const convergenceSpecies in BattlePokedex) {
+                let speciesConvergence = dex.species.get(convergenceSpecies);
+                let learnsetidConvergence = this.firstLearnsetid(speciesConvergence.id);
+                while (learnsetidConvergence) {
+                    let learnset = lsetTable.learnsets[learnsetidConvergence];
+                    if (learnset) {
+                        for (let moveid in learnset) {
+                            let learnsetEntry = learnset[moveid];
+                            const move = dex.moves.get(moveid);
+                            const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
+                            if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+                                continue;
+                            }
+                            if (
+                                !learnsetEntry.includes(gen) &&
+                                (!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
+                            ) {
+                                continue;
+                            }
+                            if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
+                                continue;
+                            }
+                            if (
+                                this.formatType?.startsWith('dlc1') &&
+                                BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
+                            ) {
+                                continue;
+                            }
+                            if (
+                                this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
+                                BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
+                            ) {
+                                continue;
+                            }
+                            if (
+                                this.formatType?.includes('svdlc1') && this.formatType !== 'svdlc1natdex' &&
+                                BattleTeambuilderTable['gen9dlc1']?.nonstandardMoves.includes(moveid)
+                            ) {
+                                continue;
+                            }
+                            const type1 = BattlePokedex[convergenceSpecies].types[0];
+                            var type2 = BattlePokedex[convergenceSpecies].types[1];
+                            if (type2 == undefined) type2 = type1;
+                            if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
+                            if (convergence[type1 + ', ' + type2].includes(moveid)) continue;
+                            convergence[type1 + ', ' + type2].push(moveid);
+                            if (!convergence[type2 + ', ' + type1]) convergence[type2 + ', ' + type1] = [];
+                            if (convergence[type2 + ', ' + type1].includes(moveid)) continue;
+                            convergence[type2 + ', ' + type1].push(moveid);
+                            if (moveid === 'sketch') sketch = true;
+                            if (moveid === 'hiddenpower') {
+                                moves.push(
+                                    'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+                                );
+                            }
+                        }
+                        learnsetidConvergence = this.nextLearnsetid(learnsetidConvergence, speciesConvergence.id);
+                    }
+                }
+            }
+            const type1 = species.types[0];
+            var type2 = species.types[1];
+            if (type2 == undefined) type2 == type1;
+            for (const moveidConvergence of convergence[type1 + ', ' + type2]) {
+                if (moves.includes(moveidConvergence)) continue;
+                moves.push(moveidConvergence);
+            }
+            for (const moveidConvergence of convergence[type2 + ', ' + type1]) {
+                if (moves.includes(moveidConvergence)) continue;
+                moves.push(moveidConvergence);
+            }
+        }
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
