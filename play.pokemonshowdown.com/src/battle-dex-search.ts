@@ -816,7 +816,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		return false;
 	}
 	getTier(pokemon: Species) {
-		if (this.formatType === 'metronome') {
+		if (this.formatType === 'metronome', 'convergence') {
 			return pokemon.num >= 0 ? String(pokemon.num) : pokemon.tier;
 		}
 		let table = window.BattleTeambuilderTable;
@@ -1140,7 +1140,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
-		const isConvergence = (format.includes ('convergence'));
+		const isConvergence = ( format.includes ('convergence'));
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', "Abilities"]];
