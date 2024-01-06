@@ -1049,7 +1049,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		}
 		if (format === 'nationaldexuubers' && table.nationaldexUUbersBans) {
 			tierSet = tierSet.filter(([type, id]) => {
-				if (id in table.ubersUUBans) return false;
+				if (id in table.nationaldexUUbersBans) return false;
 				return true;
 			});
 		}
