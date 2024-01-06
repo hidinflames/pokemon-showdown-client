@@ -1618,9 +1618,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						let learnset = lsetTable.learnsets[learnsetidConvergence];
 						if (learnset) {
 							for (let moveid in learnset) {
-								if (this.formatType === 'convergence') {
-									return pokemon.num >= 0 ? String(pokemon.num) : pokemon.tier;
-								}
 								let learnsetEntry = learnset[moveid];
 								const move = dex.moves.get(moveid);
 								const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
