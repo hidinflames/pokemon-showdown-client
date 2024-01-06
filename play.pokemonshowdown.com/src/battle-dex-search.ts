@@ -1140,7 +1140,6 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
-		const isConvergence = (format === 'convergence');
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', "Abilities"]];
@@ -1169,15 +1168,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 				if (ability.gen > dex.gen) continue;
 				abilities.push(ability.id);
 			}
-		}
-		if (isConvergence) {
-			let abilities: ID[] = [];
-			for (let convergenceSpecies in this.getTable()) {
-				const ability = dex.abilities.get(convergenceSpecies);
-			if (ability.isNonstandard) continue;
-			if (ability.gen > dex.gen) continue;
-			abilities.push(ability.id);
-			}
+
 			let goodAbilities: SearchRow[] = [['header', "Abilities"]];
 			let poorAbilities: SearchRow[] = [['header', "Situational Abilities"]];
 			let badAbilities: SearchRow[] = [['header', "Unviable Abilities"]];
@@ -1201,9 +1192,6 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			}
 		}
 		return abilitySet;
-	}
-	firstAbilityid(id: any) {
-		throw new Error("Method not implemented.");
 	}
 	filter(row: SearchRow, filters: string[][]) {
 		if (!filters) return true;
@@ -1288,7 +1276,6 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 }
 
 class BattleMoveSearch extends BattleTypedSearch<'move'> {
-	[x: string]: any;
 	sortRow: SearchRow = ['sortmove', ''];
 	getTable() {
 		return BattleMovedex;
@@ -1547,7 +1534,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
-        const isConvergence = format.includes('convergence');
 		const isTradebacks = format.includes('tradebacks');
 		const regionBornLegality = dex.gen >= 6 &&
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
@@ -1564,74 +1550,6 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
 		if (this.formatType?.startsWith('svdlc1')) lsetTable = lsetTable['gen9dlc1'];
-        if (isConvergence) {
-            var convergence = {};
-            for (const convergenceSpecies in BattlePokedex) {
-                let speciesConvergence = dex.species.get(convergenceSpecies);
-                let learnsetidConvergence = this.firstLearnsetid(speciesConvergence.id);
-                while (learnsetidConvergence) {
-                    let learnset = lsetTable.learnsets[learnsetidConvergence];
-                    if (learnset) {
-                        for (let moveid in learnset) {
-                            let learnsetEntry = learnset[moveid];
-                            const move = dex.moves.get(moveid);
-                            const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
-                            if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
-                                continue;
-                            }
-                            if (
-                                !learnsetEntry.includes(gen) &&
-                                (!isTradebacks ? true : !(move.gen <= dex.gen && learnsetEntry.includes('' + (dex.gen + 1))))
-                            ) {
-                                continue;
-                            }
-                            if (this.formatType !== 'natdex' && move.isNonstandard === "Past") {
-                                continue;
-                            }
-                            if (
-                                this.formatType?.startsWith('dlc1') &&
-                                BattleTeambuilderTable['gen8dlc1']?.nonstandardMoves.includes(moveid)
-                            ) {
-                                continue;
-                            }
-                            if (
-                                this.formatType?.includes('predlc') && this.formatType !== 'predlcnatdex' &&
-                                BattleTeambuilderTable['gen9predlc']?.nonstandardMoves.includes(moveid)
-                            ) {
-                                continue;
-                            }
-                            if (
-                                this.formatType?.includes('svdlc1') && this.formatType !== 'svdlc1natdex' &&
-                                BattleTeambuilderTable['gen9dlc1']?.nonstandardMoves.includes(moveid)
-                            ) {
-                                continue;
-                            }
-                            const type1 = BattlePokedex[convergenceSpecies].types[0];
-                            var type2 = BattlePokedex[convergenceSpecies].types[1];
-							if (type2 == undefined) type2 = type1;
-                            if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
-                            if (convergence[type1 + ', ' + type2].includes(moveid)) continue;
-                            convergence[type1 + ', ' + type2].push(moveid);
-                            if (!convergence[type2 + ', ' + type1]) convergence[type2 + ', ' + type1] = [];
-                            if (convergence[type2 + ', ' + type1].includes(moveid)) continue;
-                            convergence[type2 + ', ' + type1].push(moveid);
-                        }
-                        learnsetidConvergence = this.nextLearnsetid(learnsetidConvergence, speciesConvergence.id);
-                    }
-                }
-            }
-            const type1 = species.types[0];
-            var type2 = species.types[1];
-			if (type2 == undefined) type2 = type1;
-            for (const moveidConvergence of convergence[type1 + ', ' + type2]) {
-                if (moves.includes(moveidConvergence)) continue;
-                moves.push(moveidConvergence);
-            }
-            for (const moveidConvergence of convergence[type2 + ', ' + type1]) {
-                if (moves.includes(moveidConvergence)) continue;
-                moves.push(moveidConvergence);
-            }
-        }
 		while (learnsetid) {
 			let learnset = lsetTable.learnsets[learnsetid];
 			if (learnset) {
@@ -1669,6 +1587,14 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					) {
 						continue;
 					}
+					if (moves.includes(moveid)) continue;
+					moves.push(moveid);
+					if (moveid === 'sketch') sketch = true;
+					if (moveid === 'hiddenpower') {
+						moves.push(
+							'hiddenpowerbug', 'hiddenpowerdark', 'hiddenpowerdragon', 'hiddenpowerelectric', 'hiddenpowerfighting', 'hiddenpowerfire', 'hiddenpowerflying', 'hiddenpowerghost', 'hiddenpowergrass', 'hiddenpowerground', 'hiddenpowerice', 'hiddenpowerpoison', 'hiddenpowerpsychic', 'hiddenpowerrock', 'hiddenpowersteel', 'hiddenpowerwater'
+						);
+					}
 				}
 			}
 			learnsetid = this.nextLearnsetid(learnsetid, species.id);
@@ -1700,7 +1626,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				const move = dex.moves.get(id);
 				if (moves.includes(move.id)) continue;
 				if (move.gen > dex.gen) continue;
-				if (move.isZ || move.isMax ) continue;
+				if (move.isZ || move.isMax || (move.isNonstandard && move.isNonstandard !== 'Unobtainable')) continue;
 
 				const speciesTypes: string[] = [];
 				const moveTypes: string[] = [];
@@ -1740,7 +1666,8 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 				}
 				if (valid) moves.push(id);
 			}
-		}	
+		}
+
 		moves.sort();
 		sketchMoves.sort();
 
@@ -1876,7 +1803,3 @@ class BattleTypeSearch extends BattleTypedSearch<'type'> {
 		throw new Error("invalid sortcol");
 	}
 }
-function checkCanLearn(move: any, species: Species, setSources: any, set: any) {
-	throw new Error("Function not implemented.");
-}
-
