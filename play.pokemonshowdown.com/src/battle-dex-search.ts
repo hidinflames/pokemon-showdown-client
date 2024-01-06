@@ -1047,12 +1047,6 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 				return true;
 			});
 		}
-		if (format === 'nduubers' && table.ndUUbersBans) {
-			tierSet = tierSet.filter(([type, id]) => {
-				if (id in table.ndUUbersBans) return false;
-				return true;
-			});
-		}
 		if (format === 'nationaldexdoubles' && table.ndDoublesBans) {
 			tierSet = tierSet.filter(([type, id]) => {
 				if (id in table.ndDoublesBans) return false;
