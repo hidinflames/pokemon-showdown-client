@@ -1500,6 +1500,7 @@ var species=dex.species.get(this.species);
 var format=this.format;
 var isHackmons=format.includes('hackmons')||format.endsWith('bh');
 var isSTABmons=format.includes('stabmons')||format==='staaabmons';
+var isConvergence=format.includes('convergence')
 var isTradebacks=format.includes('tradebacks');
 var regionBornLegality=dex.gen>=6&&
 /^battle(spot|stadium|festival)/.test(format)||format.startsWith('vgc')||
