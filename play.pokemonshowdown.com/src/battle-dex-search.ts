@@ -1618,7 +1618,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 						let learnset = lsetTable.learnsets[learnsetidConvergence];
 						if (learnset) {
 							this.getTier(speciesConvergence) {
-								if (this.formatType === 'convergence') {
+								if (this.formatType === 'convergence') {;
 									return pokemon.num >= 0 ? String(pokemon.num) : pokemon.tier;
 								}
 							for (let moveid in learnset) {
