@@ -1173,10 +1173,32 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		if (isConvergence) {
 			let abilities: ID[] = [];
 			for (let convergenceSpecies in this.getTable()) {
+				let abilityidConvergence = this.firstAbilityid(speciesConvergence.id);
 				const ability = dex.abilities.get(convergenceSpecies);
 				if (ability.isNonstandard) continue;
 				if (ability.gen > dex.gen) continue;
-				abilities.push(ability.id);
+				const type1 = BattlePokedex[convergenceSpecies].types[0];
+				var type2 = BattlePokedex[convergenceSpecies].types[1];
+				if (type2 == undefined) type2 = type1;
+				if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
+				if (convergence[type1 + ', ' + type2].includes(abilityid)) continue;
+				convergence[type1 + ', ' + type2].push(abilityid);
+				if (!convergence[type2 + ', ' + type1]) convergence[type2 + ', ' + type1] = [];
+				if (convergence[type2 + ', ' + type1].includes(abilityid)) continue;
+				convergence[type2 + ', ' + type1].push(abilityid);
+			abilityidConvergence = this.nextAbilityid(abilityidConvergence, speciesConvergence.id)
+			abilities.push(ability.id);
+			}
+			const type1 = species.types[0];
+			var type2 = species.types[1];
+			if (type2 == undefined) type2 = type1;
+			for (const abilityidConvergence of convergence[type1 + ', ' + type2]) {
+			if (abilities.includes(abilityidConvergence)) continue;
+			abilities.push(abilityidConvergence);
+			}
+			for (const abilityidConvergence of convergence[type2 + ', ' + type1]) {
+			if (abilities.includes(abilityidConvergence)) continue;
+			abilities.push(abilityidConvergence);
 			}
 			let goodAbilities: SearchRow[] = [['header', "Abilities"]];
 			let poorAbilities: SearchRow[] = [['header', "Situational Abilities"]];
@@ -1201,6 +1223,9 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			}
 		}
 		return abilitySet;
+	}
+	firstAbilityid(id: any) {
+		throw new Error("Method not implemented.");
 	}
 	filter(row: SearchRow, filters: string[][]) {
 		if (!filters) return true;
