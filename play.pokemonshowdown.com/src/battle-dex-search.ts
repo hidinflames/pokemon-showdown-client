@@ -1140,6 +1140,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		const format = this.format;
 		const isHackmons = (format.includes('hackmons') || format.endsWith('bh'));
 		const isAAA = (format === 'almostanyability' || format.includes('aaa'));
+		const isConvergence = (format === convergence || format.includes ('convergence'));
 		const dex = this.dex;
 		let species = dex.species.get(this.species);
 		let abilitySet: SearchRow[] = [['header', "Abilities"]];
@@ -1164,6 +1165,15 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			let abilities: ID[] = [];
 			for (let i in this.getTable()) {
 				const ability = dex.abilities.get(i);
+				if (ability.isNonstandard) continue;
+				if (ability.gen > dex.gen) continue;
+				abilities.push(ability.id);
+			}
+		}
+		if (isConvergence) {
+			let abilities: ID[] = [];
+			for (let convergenceSpecies in this.getTable()) {
+				const ability = dex.abilities.get(convergenceSpecies);
 				if (ability.isNonstandard) continue;
 				if (ability.gen > dex.gen) continue;
 				abilities.push(ability.id);
