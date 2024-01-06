@@ -1172,7 +1172,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 		}
 		if (isConvergence) {
 			let abilities: ID[] = [];
-			for (let i in this.getTable()) {
+			for (let convergenceSpecies in this.getTable()) {
 				const ability = dex.abilities.get(convergenceSpecies);
 				if (ability.isNonstandard) continue;
 				if (ability.gen > dex.gen) continue;
