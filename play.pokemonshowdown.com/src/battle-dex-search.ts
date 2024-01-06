@@ -1617,6 +1617,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					while (learnsetidConvergence) {
 						let learnset = lsetTable.learnsets[learnsetidConvergence];
 						if (learnset) {
+							if (BattlePokedex[convergenceSpecies].num < 1) continue;
 							for (let moveid in learnset) {
 								let learnsetEntry = learnset[moveid];
 								const move = dex.moves.get(moveid);
