@@ -1175,17 +1175,7 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 			for (let convergenceSpecies in this.getTable()) {
 				let abilityidConvergence = this.firstAbilityid(speciesConvergence.id);
 				const ability = dex.abilities.get(convergenceSpecies);
-				const type1 = BattlePokedex[convergenceSpecies].types[0];
-				var type2 = BattlePokedex[convergenceSpecies].types[1];
-				if (type2 == undefined) type2 = type1;
-				if (!convergence[type1 + ', ' + type2]) convergence[type1 + ', ' + type2] = [];
-				if (convergence[type1 + ', ' + type2].includes(abilityid)) continue;
-				convergence[type1 + ', ' + type2].push(abilityid);
-				if (!convergence[type2 + ', ' + type1]) convergence[type2 + ', ' + type1] = [];
-				if (convergence[type2 + ', ' + type1].includes(abilityid)) continue;
-				convergence[type2 + ', ' + type1].push(abilityid);
-			abilityidConvergence = this.nextAbilityid(abilityidConvergence, speciesConvergence.id)
-			abilities.push(ability.id);
+				abilities.push(ability.id);
 			if (ability.isNonstandard) continue;
 			if (ability.gen > dex.gen) continue;
 			}
