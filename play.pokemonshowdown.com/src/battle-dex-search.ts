@@ -1617,12 +1617,14 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 					while (learnsetidConvergence) {
 						let learnset = lsetTable.learnsets[learnsetidConvergence];
 						if (learnset) {
-							if (BattlePokedex[convergenceSpecies].num < 1) continue;
 							for (let moveid in learnset) {
 								let learnsetEntry = learnset[moveid];
 								const move = dex.moves.get(moveid);
 								const minGenCode: {[gen: number]: string} = {6: 'p', 7: 'q', 8: 'g', 9: 'a'};
 								if (regionBornLegality && !learnsetEntry.includes(minGenCode[dex.gen])) {
+									continue;
+								}
+								if (BattlePokedex[convergenceSpecies].num < 1) {
 									continue;
 								}
 								if (
