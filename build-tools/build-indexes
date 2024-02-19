@@ -934,16 +934,6 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen8bdsp'].learnsets[id][moveid] = '8g';
 		}
 	}
-	const BDSPNatDexLearnsets = Dex.mod('gen8bdspnatdex').data.Learnsets;
-	for (const id in BDSPNatDexLearnsets) {
-		const species = Dex.mod('gen8bdspnatdex').species.get(id);
-		if (species.isNonstandard && !['Unobtainable', 'CAP'].includes(species.isNonstandard)) continue;
-		const learnset = BDSPNatDexLearnsets[id].learnset;
-		BattleTeambuilderTable['gen8bdspnatdex'].learnsets[id] = {};
-		for (const moveid in learnset) {
-			BattleTeambuilderTable['gen8bdspnatdex'].learnsets[id][moveid] = '8g';
-		}
-	}
 	const SSDLC1Learnsets = Dex.mod('gen8dlc1').data.Learnsets;
 	for (const id in SSDLC1Learnsets) {
 		const learnset = SSDLC1Learnsets[id].learnset;
