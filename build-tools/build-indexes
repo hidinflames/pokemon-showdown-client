@@ -1165,7 +1165,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 
 		const overrideSpeciesData = {};
 		// eslint-disable-next-line no-const-assign
-		BattleTeambuilderTable[mod].overrideSpeciesData = overrideSpeciesData = {};
+		BattleTeambuilderTable[mod].overrideSpeciesData = overrideSpeciesData;
 		for (const id in modData.Pokedex) {
 			const modEntry = modDex.species.get(id);
 			const parentEntry = parentDex.species.get(id);
