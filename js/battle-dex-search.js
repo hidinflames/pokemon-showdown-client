@@ -736,7 +736,7 @@ return results;
 firstLearnsetid=function firstLearnsetid(speciesid){var _this$formatType;
 var table=BattleTeambuilderTable;
 if((_this$formatType=this.formatType)!=null&&_this$formatType.startsWith('bdsp'))table=table['gen8bdsp'];
-if((_this$formatType=this.formatType)!=null&&_this$formatType.startsWith('bdspnatdex'))table=table['gen8bdspnatdex'];
+if(this.formatType==='bdspnatdex')table=table['gen8bdspnatdex'];
 if(this.formatType==='letsgo')table=table['gen7letsgo'];
 if(speciesid in table.learnsets)return speciesid;
 var species=this.dex.species.get(speciesid);
@@ -794,7 +794,7 @@ var learnsetid=this.firstLearnsetid(speciesid);
 while(learnsetid){var _this$formatType2;
 var table=BattleTeambuilderTable;
 if((_this$formatType2=this.formatType)!=null&&_this$formatType2.startsWith('bdsp'))table=table['gen8bdsp'];
-if((_this$formatType2=this.formatType)!=null&&_this$formatType2.startsWith('bdspnatdex'))table=table['gen8bdspnatdex'];
+if(this.formatType==='bdspnatdex')table=table['gen8bdspnatdex'];
 if(this.formatType==='letsgo')table=table['gen7letsgo'];
 var learnset=table.learnsets[learnsetid];
 if(learnset&&moveid in learnset&&(!this.format.startsWith('tradebacks')?learnset[moveid].includes(genChar):
@@ -933,8 +933,8 @@ isDoublesOrBS=true;
 table=table['gen'+dex.gen];
 }else if((_this$formatType4=this.formatType)!=null&&_this$formatType4.startsWith('bdsp')){
 table=table['gen8'+this.formatType];
-}else if((_this$formatType4=this.formatType)!=null&&_this$formatType4.startsWith('bdspnatdex')){
-table=table['gen8' + this.formatType];
+}else if(this.formatType==='gen8bdspnatdex'){
+table=table['gen8bdspnatdex'];
 }else if(this.formatType==='letsgo'){
 table=table['gen7letsgo'];
 }else if(this.formatType==='natdex'){
@@ -1192,7 +1192,7 @@ getDefaultResults=function getDefaultResults(){var _this$formatType8;
 var table=BattleTeambuilderTable;
 if((_this$formatType8=this.formatType)!=null&&_this$formatType8.startsWith('bdsp')){
 table=table['gen8bdsp'];
-if((_this$formatType8=this.formatType)!=null&&_this$formatType8.startsWith('bdspnatdex')){
+}else if(this.formatType==='gen8bdspnatdex'){
 table=table['gen8bdspnatdex'];
 }else if(this.formatType==='natdex'){
 table=table['gen'+this.dex.gen+'natdex'];
@@ -1523,7 +1523,7 @@ var sketch=false;
 var gen=''+dex.gen;
 var lsetTable=BattleTeambuilderTable;
 if((_this$formatType9=this.formatType)!=null&&_this$formatType9.startsWith('bdsp'))lsetTable=lsetTable['gen8bdsp'];
-if((_this$formatType9=this.formatType)!=null&&_this$formatType9.startsWith('bdspnatdex'))lsetTable=lsetTable['gen8bdspnatdex'];
+if(this.formatType==='bdspnatdex')lsetTable=lsetTable['gen8bdspnatdex'];
 if(this.formatType==='letsgo')lsetTable=lsetTable['gen7letsgo'];
 if((_this$formatType10=this.formatType)!=null&&_this$formatType10.startsWith('dlc1'))lsetTable=lsetTable['gen8dlc1'];
 if((_this$formatType11=this.formatType)!=null&&_this$formatType11.startsWith('predlc'))lsetTable=lsetTable['gen9predlc'];

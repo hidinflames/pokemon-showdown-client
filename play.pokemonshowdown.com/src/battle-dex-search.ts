@@ -952,7 +952,7 @@ class BattlePokemonSearch extends BattleTypedSearch<'pokemon'> {
 		} else if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8' + this.formatType];
 		} else if (this.formatType?.startsWith('bdspnatdex')) {
-			table = table['gen8' + this.formatType];
+			table = table['gen8bdspnatdex'];
 		} else if (this.formatType === 'letsgo') {
 			table = table['gen7letsgo'];
 		} else if (this.formatType === 'natdex') {
@@ -1237,7 +1237,7 @@ class BattleItemSearch extends BattleTypedSearch<'item'> {
 		if (this.formatType?.startsWith('bdsp')) {
 			table = table['gen8bdsp'];
 		}
-		else if (this.formatType?.startsWith('bdsp')) {
+		else if (this.formatType?.startsWith('bdspnatdex')) {
 			table = table['gen8bdspnatdex'];
 		} else if (this.formatType === 'natdex') {
 			table = table['gen' + this.dex.gen + 'natdex'];
