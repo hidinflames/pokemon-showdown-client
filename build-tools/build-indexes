@@ -531,7 +531,7 @@ process.stdout.write("Building `data/teambuilder-tables.js`... ");
 			BattleTeambuilderTable['gen8bdsp'].overrideTier = overrideTier;
 			BattleTeambuilderTable['gen8bdsp'].monotypeBans = monotypeBans;
 			BattleTeambuilderTable['gen8bdsp'].formatSlices = formatSlices;
-		} else if (isBDSPNatDex && !isDoubles) {
+		} else if (isBDSPNatDex) {
 			BattleTeambuilderTable['gen8bdspnatdex'] = {};
 			BattleTeambuilderTable['gen8bdspnatdex'].learnsets = {};
 			BattleTeambuilderTable['gen8bdspnatdex'].tiers = tiers;
