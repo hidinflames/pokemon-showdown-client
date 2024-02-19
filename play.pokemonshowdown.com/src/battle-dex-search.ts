@@ -549,7 +549,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 	 */
 	set: PokemonSet | null = null;
 
-	protected formatType: 'doubles' | 'bdsp' | 'bdspdoubles' | 'letsgo' | 'metronome' | 'natdex' | 'nfe' |
+	protected formatType: 'doubles' | 'bdsp' | 'bdspdoubles' | 'bdspnatdex' | 'letsgo' | 'metronome' | 'natdex' | 'nfe' |
 	'ssdlc1' | 'ssdlc1doubles' | 'predlc' | 'predlcdoubles' | 'predlcnatdex' | 'svdlc1' | 'svdlc1doubles' |
 	'svdlc1natdex' | 'stadium' | 'lc' | null = null;
 
@@ -746,6 +746,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 	protected firstLearnsetid(speciesid: ID) {
 		let table = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
+		if (this.formatType?.startsWith('bdspnatdex')) table = table['gen8bdspnatdex'];
 		if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 		if (speciesid in table.learnsets) return speciesid;
 		const species = this.dex.species.get(speciesid);
@@ -804,6 +805,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 		while (learnsetid) {
 			let table = BattleTeambuilderTable;
 			if (this.formatType?.startsWith('bdsp')) table = table['gen8bdsp'];
+			if (this.formatType?.startsWith('bdspnatdex')) table = table['gen8bdspnatdex'];
 			if (this.formatType === 'letsgo') table = table['gen7letsgo'];
 			let learnset = table.learnsets[learnsetid];
 			if (learnset && (moveid in learnset) && (!this.format.startsWith('tradebacks') ? learnset[moveid].includes(genChar) :
@@ -825,6 +827,7 @@ abstract class BattleTypedSearch<T extends SearchType> {
 			this.formatType === 'letsgo' ? 'gen7letsgo' :
 			this.formatType === 'bdsp' ? 'gen8bdsp' :
 			this.formatType === 'bdspdoubles' ? 'gen8bdspdoubles' :
+			this.formatType === 'bdspnatdex' ? 'gen8bdspnatdex' :
 			this.formatType === 'nfe' ? `gen${gen}nfe` :
 			this.formatType === 'lc' ? `gen${gen}lc` :
 			this.formatType === 'ssdlc1' ? 'gen8dlc1' :
@@ -1557,6 +1560,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		let gen = '' + dex.gen;
 		let lsetTable = BattleTeambuilderTable;
 		if (this.formatType?.startsWith('bdsp')) lsetTable = lsetTable['gen8bdsp'];
+		if (this.formatType?.startsWith('bdspnatdex')) lsetTable = lsetTable['gen8bdspnatdex'];
 		if (this.formatType === 'letsgo') lsetTable = lsetTable['gen7letsgo'];
 		if (this.formatType?.startsWith('ssdlc1')) lsetTable = lsetTable['gen8dlc1'];
 		if (this.formatType?.startsWith('predlc')) lsetTable = lsetTable['gen9predlc'];
