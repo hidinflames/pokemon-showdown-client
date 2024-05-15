@@ -1180,15 +1180,6 @@ class BattleAbilitySearch extends BattleTypedSearch<'ability'> {
 				if (ability.gen > dex.gen) continue;
 				abilities.push(ability.id);
 			}
-		}
-		if (isConvergence) {
-			let abilities: ID[] = [];
-			for (let convergenceSpecies in this.getTable()) {
-				const ability = dex.abilities.get(convergenceSpecies);
-				if (ability.isNonstandard) continue;
-				if (ability.gen > dex.gen) continue;
-				abilities.push(ability.id);
-			}
 
 			let goodAbilities: SearchRow[] = [['header', "Abilities"]];
 			let poorAbilities: SearchRow[] = [['header', "Situational Abilities"]];
