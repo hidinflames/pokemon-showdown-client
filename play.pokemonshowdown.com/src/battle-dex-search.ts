@@ -1565,6 +1565,7 @@ class BattleMoveSearch extends BattleTypedSearch<'move'> {
 		const isSTABmons = (format.includes('stabmons') || format === 'staaabmons');
 		const isConvergence = format.includes('convergence');
 		const isTradebacks = format.includes('tradebacks');
+		const isConcept = format.includes ('nationaldexconcept')
 		const regionBornLegality = dex.gen >= 6 &&
 			(/^battle(spot|stadium|festival)/.test(format) || format.startsWith('bss') ||
 				format.startsWith('vgc') || (dex.gen === 9 && this.formatType !== 'natdex'));
